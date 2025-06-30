@@ -50,7 +50,7 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
 
     tags = ["e4s", "compiler"]
 
-    generator("ninja")
+    generator("make")
 
     license("Apache-2.0")
 
@@ -1258,8 +1258,6 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
             # rebuild libomptarget to get bytecode runtime library files
             with working_dir(ompdir, create=True):
                 cmake_args = [
-                    "-G",
-                    "Ninja",
                     define("CMAKE_BUILD_TYPE", spec.variants["build_type"].value),
                     define("CMAKE_C_COMPILER", spec.prefix.bin + "/clang"),
                     define("CMAKE_CXX_COMPILER", spec.prefix.bin + "/clang++"),
@@ -1275,8 +1273,8 @@ class Llvm(CMakePackage, CudaPackage, LlvmDetection, CompilerPackage):
                 )
 
                 cmake(*cmake_args)
-                ninja()
-                ninja("install")
+                make()
+                make("install")
         if self.spec.satisfies("+python"):
             if spec.version < Version("17.0.0"):
                 # llvm bindings were removed in v17:
